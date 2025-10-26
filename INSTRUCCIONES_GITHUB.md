@@ -3,27 +3,27 @@
 ## 🚀 Paso 1: Subir a GitHub
 
 ### 1.1 Crear repositorio en GitHub
-1. Ve a [github.com](https://github.com) e inicia sesión
-2. Haz clic en el botón **"+"** (arriba derecha) → **"New repository"**
-3. Nombre del repositorio: `asistente-virtual-ia` (o el que prefieras)
-4. Descripción: `Asistente virtual con IA usando Google Gemini y síntesis de voz`
-5. Selecciona **Public** (o Private si lo prefieres)
-6. **NO** marques "Add a README file" (ya tenemos uno)
-7. Haz clic en **"Create repository"**
+1. Ve a [github.com/new](https://github.com/new) e inicia sesión
+2. Configura el repositorio:
+   - **Repository name:** `python_av` (importante: exactamente este nombre)
+   - **Description:** `Asistente virtual con IA usando Google Gemini y síntesis de voz`
+   - Selecciona **Public** (o Private si lo prefieres)
+   - **NO** marques "Add a README file" (ya tenemos uno)
+3. Haz clic en **"Create repository"**
 
 ### 1.2 Conectar y subir el código
 
 Copia y ejecuta estos comandos en tu terminal (CMD):
 
 ```cmd
-# Conectar con tu repositorio de GitHub
-git remote add origin https://github.com/TU_USUARIO/asistente-virtual-ia.git
+# El remote ya está configurado como:
+# git remote add origin https://github.com/AngelsMain/python_av.git
 
-# Subir el código
+# Subir el código (después de crear el repositorio en GitHub)
 git push -u origin main
 ```
 
-**Nota:** Reemplaza `TU_USUARIO` con tu nombre de usuario de GitHub.
+**Nota:** El repositorio debe llamarse exactamente `python_av` en GitHub.
 
 Si te pide credenciales:
 - Usuario: tu nombre de usuario de GitHub
