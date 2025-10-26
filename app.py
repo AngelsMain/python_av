@@ -50,12 +50,11 @@ except ImportError:
     MOTOR_VOZ = os.environ.get('MOTOR_VOZ', 'gtts')
     GTTS_LANG = os.environ.get('GTTS_LANG', 'es')
     GTTS_SLOW = os.environ.get('GTTS_SLOW', 'False').lower() == 'true'
-    GTTS_SPEED = float(os.environ.get('GTTS_SPEED', '1.5'))
+    GTTS_SPEED = float(os.environ.get('GTTS_SPEED', '1.25'))
     print(f"   🤖 Proveedor IA: {IA_PROVIDER}")
     print(f"   🎤 Motor de voz: {MOTOR_VOZ}")
+    print(f"   ⚡ Velocidad gTTS: {GTTS_SPEED}x")
     print("🌐"*30 + "\n")
-    GTTS_SLOW = False
-    GTTS_SPEED = 2.0
 
 # Configuración del asistente IA
 ASISTENTE_CONTEXTO = """Eres AVP (Asistente Virtual Python), un asistente inteligente, amigable y altamente capaz.
@@ -931,5 +930,14 @@ def procesar():
 
 if __name__ == '__main__':
     print("🤖 Asistente Virtual iniciado!")
-    print("📱 Abre tu navegador en: http://localhost:5000")
-    app.run(debug=True, port=5000)
+    
+    # Configuración del puerto y modo debug desde variables de entorno
+    port = int(os.environ.get('PORT', 5000))
+    debug_mode = os.environ.get('FLASK_ENV', 'development') == 'development'
+    
+    if debug_mode:
+        print(f"📱 Modo desarrollo: http://localhost:{port}")
+        app.run(debug=True, port=port)
+    else:
+        print(f"🌐 Modo producción en puerto {port}")
+        app.run(debug=False, host='0.0.0.0', port=port)
