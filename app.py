@@ -21,7 +21,8 @@ from io import BytesIO
 app = Flask(__name__)
 
 # ============= CONFIGURACIÓN DE IA =============
-# Importar configuración desde config_ia.py
+# Intentar cargar desde config_ia.py (desarrollo local)
+# O desde variables de entorno (producción)
 try:
     from config_ia import (
         IA_PROVIDER, OPENAI_API_KEY, GEMINI_API_KEY, 
@@ -36,19 +37,23 @@ try:
     print(f"   ⚡ Velocidad gTTS: {GTTS_SPEED}x")
     print("🔧"*30 + "\n")
 except ImportError:
-    # Valores por defecto si no existe config_ia.py
-    print("\n" + "⚠️"*30)
-    print("⚠️ No se encontró config_ia.py - Usando valores por defecto")
-    print("⚠️"*30 + "\n")
-    IA_PROVIDER = 'local'
-    OPENAI_API_KEY = 'TU_OPENAI_API_KEY_AQUI'
-    GEMINI_API_KEY = 'TU_GEMINI_API_KEY_AQUI'
-    OPENAI_MODEL = 'gpt-3.5-turbo'
-    GEMINI_MODEL = 'gemini-2.0-flash'
-    VELOCIDAD_VOZ = 250
-    VOLUMEN_VOZ = 0.95
-    MOTOR_VOZ = 'gtts'
-    GTTS_LANG = 'es'
+    # Cargar desde variables de entorno (producción)
+    print("\n" + "🌐"*30)
+    print("🌐 Cargando configuración desde variables de entorno")
+    IA_PROVIDER = os.environ.get('IA_PROVIDER', 'local')
+    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', 'TU_OPENAI_API_KEY_AQUI')
+    GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'TU_GEMINI_API_KEY_AQUI')
+    OPENAI_MODEL = os.environ.get('OPENAI_MODEL', 'gpt-3.5-turbo')
+    GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.0-flash')
+    VELOCIDAD_VOZ = int(os.environ.get('VELOCIDAD_VOZ', '250'))
+    VOLUMEN_VOZ = float(os.environ.get('VOLUMEN_VOZ', '0.95'))
+    MOTOR_VOZ = os.environ.get('MOTOR_VOZ', 'gtts')
+    GTTS_LANG = os.environ.get('GTTS_LANG', 'es')
+    GTTS_SLOW = os.environ.get('GTTS_SLOW', 'False').lower() == 'true'
+    GTTS_SPEED = float(os.environ.get('GTTS_SPEED', '1.5'))
+    print(f"   🤖 Proveedor IA: {IA_PROVIDER}")
+    print(f"   🎤 Motor de voz: {MOTOR_VOZ}")
+    print("🌐"*30 + "\n")
     GTTS_SLOW = False
     GTTS_SPEED = 2.0
 
