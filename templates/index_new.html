@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente Virtual - Python</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Asistente Virtual</h1>
+            <p class="subtitle">Tu asistente inteligente creado con Python y Flask</p>
+            <div id="ia-status" class="ia-status">
+                <span class="status-loading">⏳ Detectando modo...</span>
+            </div>
+        </header>
+
+        <div class="chat-container">
+            <div id="chat-messages" class="chat-messages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <strong>Asistente:</strong> ¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?
+                    </div>
+                    <div class="message-time"></div>
+                </div>
+            </div>
+
+            <div class="input-container">
+                <input 
+                    type="text" 
+                    id="user-input" 
+                    placeholder="Escribe cualquier cosa... La IA lo entenderá 💬"
+                    autocomplete="off"
+                >
+                <button id="send-btn" onclick="enviarComando()">
+                    <span>Enviar</span>
+                </button>
+                <button id="voice-btn" onclick="toggleVoz()" class="voice-btn" title="Activar/Desactivar voz">
+                    🔊
+                </button>
+            </div>
+
+            <div class="examples">
+                <p><strong>✨ Prueba estas conversaciones naturales:</strong></p>
+                
+                <div class="examples-category">
+                    <h4>🧮 Cálculos y Conversiones</h4>
+                    <div class="example-buttons">
+                        <button onclick="probarComando('Cuánto es 25 * 48 + 100?')">🔢 Calculadora</button>
+                        <button onclick="probarComando('Convierte 100 celsius a fahrenheit')">🌡️ Temperatura</button>
+                        <button onclick="probarComando('Cuántos kilómetros son 5 millas?')">📏 Distancia</button>
+                    </div>
+                </div>
+
+                <div class="examples-category">
+                    <h4>💡 Preguntas Inteligentes</h4>
+                    <div class="example-buttons">
+                        <button onclick="probarComando('Explícame qué es la inteligencia artificial')">🤖 Aprender</button>
+                        <button onclick="probarComando('Dame consejos para estudiar mejor')">📚 Consejos</button>
+                        <button onclick="probarComando('Cuéntame un dato curioso sobre el espacio')">🌌 Curiosidades</button>
+                    </div>
+                </div>
+
+                <div class="examples-category">
+                    <h4>🎯 Productividad</h4>
+                    <div class="example-buttons">
+                        <button onclick="probarComando('Genera una contraseña segura de 16 caracteres')">🔐 Contraseña</button>
+                        <button onclick="probarComando('Crea una lista de tareas: estudiar, ejercicio, leer')">📝 Lista</button>
+                        <button onclick="probarComando('Qué día de la semana es hoy?')">📅 Fecha</button>
+                    </div>
+                </div>
+
+                <div class="examples-category">
+                    <h4>🎨 Creatividad y Más</h4>
+                    <div class="example-buttons">
+                        <button onclick="probarComando('Escribe un poema corto sobre Python')">✍️ Poema</button>
+                        <button onclick="probarComando('Cuéntame un chiste de programadores')">😄 Chiste</button>
+                        <button onclick="probarComando('Ayúdame a planificar mi día')">📋 Planificar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Creado con ❤️ usando Python, Flask, HTML, CSS y JavaScript</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
