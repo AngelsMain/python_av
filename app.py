@@ -101,6 +101,9 @@ Recuerda: Eres un asistente completo e inteligente. ¡Ayuda al usuario de la mej
 wikipedia.set_lang('es')
 
 # ============= FUNCIONES DE VOZ MEJORADAS =============
+# NOTA: Las funciones hablar_gtts() y hablar_pyttsx3() ya NO se usan en producción
+# El audio ahora se genera con generar_audio_response() y se reproduce en el navegador del cliente
+# Esto permite que la voz funcione correctamente en Render y otros servidores sin interfaz gráfica
 
 def hablar_gtts(texto):
     """Función para hablar usando Google TTS (voz muy natural)"""
@@ -852,15 +855,58 @@ def test_voz():
     texto = "Esta es una prueba de voz. Si me escuchas con voz natural, gTTS funciona correctamente."
     
     try:
-        print("🔊 [/test_voz] Llamando directamente a hablar()...")
-        hablar(texto)
-        print("✅ [/test_voz] Función hablar() completada")
-        return jsonify({'resultado': 'Voz reproducida correctamente', 'motor': MOTOR_VOZ})
+        print("🔊 [/test_voz] Generando audio y enviando al navegador...")
+        return generar_audio_response(texto)
     except Exception as e:
         print(f"❌ [/test_voz] Error: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({'resultado': f'Error: {e}', 'motor': MOTOR_VOZ}), 500
+
+@app.route('/generar_audio', methods=['POST'])
+def generar_audio():
+    """Genera audio TTS y lo envía al cliente"""
+    print("\n" + "🎵"*30)
+    print("🎵 [/generar_audio] Generando audio TTS")
+    
+    data = request.get_json()
+    texto = data.get('texto', '')
+    
+    if not texto:
+        return jsonify({'error': 'No se proporcionó texto'}), 400
+    
+    print(f"📝 [/generar_audio] Texto: {texto[:100]}...")
+    
+    try:
+        return generar_audio_response(texto)
+    except Exception as e:
+        print(f"❌ [/generar_audio] Error: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+def generar_audio_response(texto):
+    """Genera archivo de audio TTS y lo retorna como respuesta"""
+    try:
+        print(f"⏳ [generar_audio_response] Generando audio con gTTS...")
+        tts = gTTS(text=texto, lang=GTTS_LANG, slow=GTTS_SLOW)
+        
+        # Guardar en memoria usando BytesIO
+        audio_io = BytesIO()
+        tts.write_to_fp(audio_io)
+        audio_io.seek(0)
+        
+        print(f"✅ [generar_audio_response] Audio generado ({audio_io.getbuffer().nbytes} bytes)")
+        
+        return send_file(
+            audio_io,
+            mimetype='audio/mpeg',
+            as_attachment=False,
+            download_name='audio.mp3'
+        )
+    except Exception as e:
+        print(f"❌ [generar_audio_response] Error: {e}")
+        raise
 
 @app.route('/procesar', methods=['POST'])
 def procesar():
@@ -884,22 +930,24 @@ def procesar():
     respuesta = procesar_comando(comando)
     print(f"✅ [/procesar] Respuesta generada: {respuesta[:100]}...")
     
-    # Hacer que el asistente hable (ahora usa subprocess, no bloquea)
-    if hablar_flag:
-        print("🎤 [/procesar] Llamando a hablar() directamente (usa subprocess, no bloquea)...")
-        try:
-            hablar(respuesta)
-            print("✅ [/procesar] Llamada a hablar() completada")
-        except Exception as e:
-            print(f"❌ [/procesar] Error al hablar: {e}")
-            import traceback
-            traceback.print_exc()
+    # Preparar respuesta
+    resultado = {'respuesta': respuesta}
+    
+    # Si la voz está activada y el motor es gtts, indicar al cliente que debe solicitar audio
+    if hablar_flag and MOTOR_VOZ == 'gtts':
+        print("🎤 [/procesar] Voz activada con gTTS - Cliente reproducirá audio")
+        resultado['audio_disponible'] = True
+        resultado['motor_voz'] = MOTOR_VOZ
+    elif hablar_flag:
+        print(f"⚠️ [/procesar] Motor de voz '{MOTOR_VOZ}' no soportado en producción")
+        resultado['audio_disponible'] = False
+        resultado['motor_voz'] = MOTOR_VOZ
     else:
         print("🔇 [/procesar] Voz NO solicitada (hablar=False)")
     
     print("📤 [/procesar] Retornando respuesta al cliente")
     print("📨"*30 + "\n")
-    return jsonify({'respuesta': respuesta})
+    return jsonify(resultado)
 
 if __name__ == '__main__':
     print("🤖 Asistente Virtual iniciado!")

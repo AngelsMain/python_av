@@ -48,6 +48,46 @@ function agregarMensaje(texto, esUsuario = false) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+// Función para reproducir audio TTS
+async function reproducirAudio(texto) {
+    try {
+        console.log('🔊 Solicitando audio TTS para:', texto.substring(0, 50) + '...');
+        
+        const response = await fetch('/generar_audio', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                texto: texto
+            })
+        });
+        
+        if (!response.ok) {
+            console.error('❌ Error al generar audio:', response.statusText);
+            return;
+        }
+        
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        const audio = new Audio(audioUrl);
+        audio.playbackRate = 1.25; // Velocidad 1.25x (igual que en config)
+        
+        console.log('✅ Reproduciendo audio...');
+        await audio.play();
+        
+        // Limpiar URL cuando termine
+        audio.onended = () => {
+            URL.revokeObjectURL(audioUrl);
+            console.log('✅ Audio completado');
+        };
+        
+    } catch (error) {
+        console.error('❌ Error al reproducir audio:', error);
+    }
+}
+
 // Función para enviar comando al servidor
 async function enviarComando() {
     const input = document.getElementById('user-input');
@@ -98,6 +138,12 @@ async function enviarComando() {
         
         // Agregar respuesta del asistente
         agregarMensaje(data.respuesta, false);
+        
+        // Si la voz está activada y el audio está disponible, reproducirlo
+        if (vozActivada && data.audio_disponible) {
+            console.log('🎤 Voz activada - reproduciendo audio en navegador');
+            await reproducirAudio(data.respuesta);
+        }
         
     } catch (error) {
         // Eliminar mensaje de carga
