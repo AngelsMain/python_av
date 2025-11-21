@@ -25,8 +25,8 @@ app = Flask(__name__)
 # O desde variables de entorno (producción)
 try:
     from config_ia import (
-        IA_PROVIDER, OPENAI_API_KEY, GEMINI_API_KEY, 
-        OPENAI_MODEL, GEMINI_MODEL, VELOCIDAD_VOZ, VOLUMEN_VOZ,
+        IA_PROVIDER, GEMINI_API_KEY, 
+        GEMINI_MODEL, VELOCIDAD_VOZ, VOLUMEN_VOZ,
         MOTOR_VOZ, GTTS_LANG, GTTS_SLOW, GTTS_SPEED
     )
     print("\n" + "🔧"*30)
@@ -40,10 +40,8 @@ except ImportError:
     # Cargar desde variables de entorno (producción)
     print("\n" + "🌐"*30)
     print("🌐 Cargando configuración desde variables de entorno")
-    IA_PROVIDER = os.environ.get('IA_PROVIDER', 'local')
-    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', 'TU_OPENAI_API_KEY_AQUI')
+    IA_PROVIDER = os.environ.get('IA_PROVIDER', 'gemini')
     GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'TU_GEMINI_API_KEY_AQUI')
-    OPENAI_MODEL = os.environ.get('OPENAI_MODEL', 'gpt-3.5-turbo')
     GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.0-flash')
     VELOCIDAD_VOZ = int(os.environ.get('VELOCIDAD_VOZ', '250'))
     VOLUMEN_VOZ = float(os.environ.get('VOLUMEN_VOZ', '0.95'))
@@ -251,26 +249,6 @@ def hablar(texto):
     
     print("🔔"*30 + "\n")
 
-def respuesta_con_openai(mensaje):
-    """Genera respuesta usando OpenAI GPT"""
-    try:
-        from openai import OpenAI
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        
-        response = client.chat.completions.create(
-            model=OPENAI_MODEL,
-            messages=[
-                {"role": "system", "content": ASISTENTE_CONTEXTO},
-                {"role": "user", "content": mensaje}
-            ],
-            temperature=0.7,
-            max_tokens=500
-        )
-        
-        return response.choices[0].message.content
-    except Exception as e:
-        return f"Error al conectar con OpenAI: {str(e)}. Verifica tu API key."
-
 def respuesta_con_gemini(mensaje):
     """Genera respuesta usando Google Gemini"""
     try:
@@ -295,13 +273,8 @@ def respuesta_con_gemini(mensaje):
         return f"Error al conectar con Gemini: {error_msg}. Verifica tu API key y el modelo en config_ia.py"
 
 def respuesta_con_ia(mensaje):
-    """Función principal que selecciona el proveedor de IA"""
-    if IA_PROVIDER == 'openai':
-        if OPENAI_API_KEY == 'TU_OPENAI_API_KEY_AQUI':
-            return "⚠️ Para usar OpenAI, necesitas configurar tu API key en app.py (línea 21). Obtén una en: https://platform.openai.com/api-keys"
-        return respuesta_con_openai(mensaje)
-    
-    elif IA_PROVIDER == 'gemini':
+    """Función principal que usa Gemini AI"""
+    if IA_PROVIDER == 'gemini':
         if GEMINI_API_KEY == 'TU_GEMINI_API_KEY_AQUI':
             return "⚠️ Para usar Gemini, necesitas configurar tu API key en app.py (línea 22). Obtén una GRATIS en: https://makersuite.google.com/app/apikey"
         return respuesta_con_gemini(mensaje)

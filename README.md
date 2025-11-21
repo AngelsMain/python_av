@@ -1,6 +1,6 @@
 # 🤖 Asistente Virtual con IA
 
-Asistente virtual inteligente desarrollado en Python con Flask que utiliza IA conversacional (Google Gemini o OpenAI ChatGPT) y síntesis de voz natural.
+Asistente virtual inteligente desarrollado en Python con Flask que utiliza Google Gemini AI y síntesis de voz natural.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)
@@ -8,11 +8,10 @@ Asistente virtual inteligente desarrollado en Python con Flask que utiliza IA co
 
 ## ✨ Características
 
-- 🧠 **IA Conversacional Avanzada**: Integración con Google Gemini (gratis) o OpenAI GPT
+- 🧠 **IA Conversacional Avanzada**: Integración con Google Gemini AI (gratis)
 - 🎨 **Interfaz Web Moderna**: Diseño responsive con animaciones fluidas
 - 🗣️ **Voz Natural Humana**: Google Text-to-Speech (gTTS) con velocidad ajustable
 - ⚡ **Respuestas Rápidas**: Procesamiento asíncrono sin bloqueos
-- 🔄 **Múltiples Proveedores**: Cambia fácilmente entre Gemini, OpenAI o modo local
 - 🎵 **Audio Optimizado**: Reproducción con pygame y control de velocidad
 
 ## 🚀 Inicio Rápido
@@ -51,9 +50,8 @@ copy config_ia.example.py config_ia.py
 # Edita config_ia.py y agrega tus API keys
 ```
 
-**Para obtener API keys GRATIS:**
-- **Google Gemini** (Recomendado): https://makersuite.google.com/app/apikey
-- **OpenAI**: https://platform.openai.com/api-keys (requiere pago)
+**Para obtener tu API key GRATIS:**
+- **Google Gemini**: https://makersuite.google.com/app/apikey
 
 ### 5. Ejecutar la Aplicación
 
@@ -63,20 +61,17 @@ python app.py
 
 Abre tu navegador en: `http://localhost:5000`
 
-## 🎯 Configuración de IA
+## 🎯 Configuración
 
-Edita `config_ia.py` para elegir tu proveedor:
+Edita `config_ia.py` con tu API key de Gemini:
 
 ```python
-# Opciones: 'local', 'openai', 'gemini'
-IA_PROVIDER = 'gemini'  # Recomendado: GRATIS
-
-# Pega tu API key
+IA_PROVIDER = 'gemini'
 GEMINI_API_KEY = 'tu_api_key_aqui'
 
 # Configuración de voz
 MOTOR_VOZ = 'gtts'  # Voz natural de Google
-GTTS_SPEED = 1.5    # Velocidad: 1.0=normal, 2.0=doble
+GTTS_SPEED = 1.25   # Velocidad: 1.0=normal, 1.25=25% más rápido
 ```
 
 ## 🗣️ Ajustar Velocidad de Voz
@@ -104,7 +99,6 @@ Con IA activada, puedes hacer preguntas naturales:
 
 - Flask 3.0.0 - Framework web
 - google-generativeai - Google Gemini AI
-- openai - OpenAI GPT (opcional)
 - gTTS - Síntesis de voz natural
 - pygame - Reproducción de audio
 - wikipedia - Búsquedas en Wikipedia
